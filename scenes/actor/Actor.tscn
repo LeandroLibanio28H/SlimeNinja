@@ -1,0 +1,87 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://scenes/ninja/textures/Ninja.png" type="Texture" id=1]
+[ext_resource path="res://scenes/actor/Actor.cs" type="Script" id=2]
+[ext_resource path="res://source/state_machine/FiniteStateMachine.cs" type="Script" id=3]
+[ext_resource path="res://source/state_machine/states/IdleState.cs" type="Script" id=4]
+[ext_resource path="res://source/state_machine/states/WalkState.cs" type="Script" id=5]
+
+[sub_resource type="Animation" id=1]
+resource_name = "Idle"
+loop = true
+step = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 0, 1 ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "Jump"
+step = 1.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 6 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "Moving"
+length = 2.0
+loop = true
+step = 0.333333
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.333333, 0.666667, 1, 1.33333, 1.66667 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5 ]
+}
+
+[sub_resource type="CircleShape2D" id=4]
+radius = 16.0
+
+[node name="Actor" type="KinematicBody2D"]
+script = ExtResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+hframes = 7
+frame = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Idle = SubResource( 1 )
+anims/Jump = SubResource( 2 )
+anims/Moving = SubResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource( 4 )
+
+[node name="FiniteStateMachine" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="IdleState" type="Node" parent="FiniteStateMachine"]
+script = ExtResource( 4 )
+
+[node name="WalkState" type="Node" parent="FiniteStateMachine"]
+script = ExtResource( 5 )
